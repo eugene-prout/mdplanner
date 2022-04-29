@@ -10,10 +10,14 @@ def core():
 
 @core.command()
 def testcommand():
+    """Test if system is working correctly. Will output "testcommand is running" if system working.
+    """
     click.echo("testcommand is running")
 
 @core.command()
 def add_task():
+    """Add a new task to the board. Will ask user for title, category and description.
+    """
     click.echo("Adding new task")
     title = click.prompt('Enter task title', type=str)
     all_cats = [x.name for x  in get_all_categories()]
@@ -24,6 +28,8 @@ def add_task():
 
 @core.command()
 def view_category():
+    """Shows all tasks in a category and allows user to pick one task to view.
+    """
     click.echo("Select a category to view")
     all_cats = [x.name for x  in get_all_categories()]
     category = numbered_prompt(all_cats, 'Enter task category')
@@ -40,13 +46,25 @@ def view_category():
         view_task(selected_task)
 
 def view_task(selected_task):
-    
+    """Output details from supplied task.
+    :param selected_task: the task to view details about
+    :type selected_task: Note
+    """
     click.echo(selected_task.title)
     click.echo(selected_task.category)
     click.echo(selected_task.description)
+    
 
 def numbered_prompt(choices, text_prompt):
+    """Enumerates the choices available for the user and allows them to enter either the value or the number. Uses click prompt and returns the option from choices that they pick.
+
+    :param choices: list of acceptable inputs
+    :type choices: list
     
+    :return: string containing the user's choice from choices parameter
+    :rtype: str
+    """
+
     numbered = list(enumerate(choices, 1))
     for x in numbered:
         click.echo(f"({x[0]}) {x[1]}")
@@ -57,6 +75,11 @@ def numbered_prompt(choices, text_prompt):
     return choice
 
 def get_all_categories():
+    """Generate a list of all categories in the system. Looks at subdirectory names of the data folder.
+
+    :return: list of all subdirectories
+    :rtype: list
+    """
     p = Path('./data')
 
     # All subdirectories in the current directory, not recursive.
