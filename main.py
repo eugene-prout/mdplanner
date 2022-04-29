@@ -1,4 +1,5 @@
-from note import Note
+from asyncio import tasks
+from task import Task
 import click
 import os
 from click_shell import shell
@@ -23,8 +24,8 @@ def add_task():
     all_cats = [x.name for x  in get_all_categories()]
     category = numbered_prompt(all_cats, 'Enter task category')
     description = click.prompt('Enter task description', type=str)
-    note = Note(title, description, category)
-    note.write_to_file()
+    task = Task(title, description, category)
+    task.write_to_file()
 
 @core.command()
 def view_category():
@@ -34,21 +35,21 @@ def view_category():
     all_cats = [x.name for x  in get_all_categories()]
     category = numbered_prompt(all_cats, 'Enter task category')
     p = Path('./data') / category
-    notes = []
+    tasks = []
     for filename in os.listdir(p):
-        notes.append(Note.from_file(p / filename))
-    titles = [x.title for x in notes]
+        tasks.append(Task.from_file(p / filename))
+    titles = [x.title for x in tasks]
     task = numbered_prompt(['MENU']+titles, 'Select a post to view more information about it')
     if task == 'MENU':
         return
     else:
-        selected_task = [note for note in notes if note.title == task][0]
+        selected_task = [t for t in tasks if t.title == task][0]
         view_task(selected_task)
 
 def view_task(selected_task):
     """Output details from supplied task.
     :param selected_task: the task to view details about
-    :type selected_task: Note
+    :type selected_task: Task
     """
     click.echo(selected_task.title)
     click.echo(selected_task.category)
