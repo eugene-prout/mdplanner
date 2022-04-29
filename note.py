@@ -10,7 +10,7 @@ class Note:
     @classmethod
     def from_file(cls, filepath):
         data = cls.read_from_file(filepath)
-        return cls(data)
+        return cls(title=data[0], description=data[1], category=data[2])
 
     @staticmethod
     def read_from_file(filepath):
@@ -18,7 +18,7 @@ class Note:
             title_input, category_input, description_input = f.read().splitlines()
         if title_input[0:2] != "# ":
             raise ValueError("The specified file has an incorrectly formatted title")
-        return title_input, description_input, category_input
+        return title_input[2:], description_input, category_input[3:]
 
     def write_to_file(self):
         path = Path('./data')
