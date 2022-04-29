@@ -1,4 +1,3 @@
-from unicodedata import category
 from note import Note
 import click
 import os
@@ -16,12 +15,24 @@ def testcommand():
 @core.command()
 def add_task():
     click.echo("Adding new task")
-    title = click.prompt('Enter post title', type=str)
+    title = click.prompt('Enter task title', type=str)
     all_cats = [x.name for x  in get_all_categories()]
-    category = numbered_prompt(all_cats, 'Enter post category')
-    description = click.prompt('Enter post description', type=str)
+    category = numbered_prompt(all_cats, 'Enter task category')
+    description = click.prompt('Enter task description', type=str)
     note = Note(title, description, category)
     note.write_to_file()
+
+@core.command()
+def view_category():
+    click.echo("Select a category to view")
+    all_cats = [x.name for x  in get_all_categories()]
+    category = numbered_prompt(all_cats, 'Enter task category')
+    p = Path('./data') / category
+    notes = []
+    for filename in os.listdir(p):
+        notes.append(Note.from_file(p / filename))
+    for note in notes:
+        print(note.title)
 
 def numbered_prompt(choices, text_prompt):
     
