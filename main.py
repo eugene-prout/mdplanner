@@ -31,8 +31,19 @@ def view_category():
     notes = []
     for filename in os.listdir(p):
         notes.append(Note.from_file(p / filename))
-    for note in notes:
-        print(note.title)
+    titles = [x.title for x in notes]
+    task = numbered_prompt(['MENU']+titles, 'Select a post to view more information about it')
+    if task == 'MENU':
+        return
+    else:
+        selected_task = [note for note in notes if note.title == task][0]
+        view_task(selected_task)
+
+def view_task(selected_task):
+    
+    click.echo(selected_task.title)
+    click.echo(selected_task.category)
+    click.echo(selected_task.description)
 
 def numbered_prompt(choices, text_prompt):
     
